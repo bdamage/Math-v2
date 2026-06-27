@@ -19,6 +19,7 @@ const EXERCISE_TYPES = [
   "doubles",
   "halves",
   "objectCount",
+  "numberBond",
   "tensTo100",
 ];
 
@@ -104,11 +105,12 @@ function buildHalves(rangeMax, cap) {
 
 function buildTensTo100(settings) {
   const tens = Array.from({length: 11}, (_, index) => index * 10);
-  const preferredOps = settings.operationMode === "mixed"
-    ? ["+", "-"]
-    : ["+", "-"].includes(settings.operationMode)
-      ? [settings.operationMode]
-      : ["+"];
+  const preferredOps =
+    settings.operationMode === "mixed"
+      ? ["+", "-"]
+      : ["+", "-"].includes(settings.operationMode)
+        ? [settings.operationMode]
+        : ["+"];
 
   const op = sample(preferredOps);
 
@@ -245,6 +247,59 @@ function buildObjectCount(rangeMax, cap) {
   };
 }
 
+function buildNumberBond(rangeMax, cap) {
+  const top = randomInt(2, Math.max(2, Math.min(rangeMax, cap + 6)));
+  const left = randomInt(0, top);
+  const right = top - left;
+  const missing = sample(["top", "left", "right"]);
+
+  if (missing === "top") {
+    return {
+      kind: "numberBond",
+      prompt: "Vilket tal ska stå i övre cirkeln?",
+      answer: top,
+      answerLabel: String(top),
+      visual: {
+        type: "bondCircles",
+        top: null,
+        left,
+        right,
+      },
+      questionTitle: "Fråga",
+    };
+  }
+
+  if (missing === "left") {
+    return {
+      kind: "numberBond",
+      prompt: "Vilket tal saknas i vänstra cirkeln?",
+      answer: left,
+      answerLabel: String(left),
+      visual: {
+        type: "bondCircles",
+        top,
+        left: null,
+        right,
+      },
+      questionTitle: "Fråga",
+    };
+  }
+
+  return {
+    kind: "numberBond",
+    prompt: "Vilket tal saknas i högra cirkeln?",
+    answer: right,
+    answerLabel: String(right),
+    visual: {
+      type: "bondCircles",
+      top,
+      left,
+      right: null,
+    },
+    questionTitle: "Fråga",
+  };
+}
+
 function chooseOperation(mode) {
   if (mode !== "mixed") {
     return mode;
@@ -331,6 +386,8 @@ export function generateQuestion(settings, idSeed = 0) {
     generated = buildHalves(settings.rangeMax, cap);
   } else if (kind === "objectCount") {
     generated = buildObjectCount(settings.rangeMax, cap);
+  } else if (kind === "numberBond") {
+    generated = buildNumberBond(settings.rangeMax, cap);
   } else if (kind === "tensTo100") {
     generated = buildTensTo100(settings);
   } else {
