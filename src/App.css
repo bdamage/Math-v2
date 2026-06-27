@@ -199,6 +199,50 @@
   background: #fff;
 }
 
+.bond-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  margin: 0.55rem 0 0.9rem;
+}
+
+.bond-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  border: 2px solid #31506a;
+  background: #fff;
+  color: #1f2d3a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.74rem;
+}
+
+.bond-circle.blank {
+  border-style: dashed;
+  background: #f9fcff;
+}
+
+.bond-branches {
+  width: 120px;
+  height: 26px;
+  margin: 0.1rem 0;
+}
+
+.bond-line {
+  stroke: #31506a;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.bond-row {
+  display: flex;
+  gap: 1.8rem;
+}
+
 .answer-label {
   display: block;
   font-weight: 600;
@@ -300,6 +344,12 @@
   color: var(--text-muted);
 }
 
+.worksheet-instruction {
+  margin: 0.4rem 0 0;
+  font-weight: 700;
+  color: #1f2d3a;
+}
+
 .worksheet-grid {
   margin: 1rem 0;
   padding-left: 0;
@@ -318,6 +368,26 @@
   --square-size: 14px;
   justify-content: start;
   margin: 0.35rem 0 0.2rem;
+}
+
+.worksheet-grid .bond-visual {
+  align-items: center;
+  margin: 0.25rem 0 0.35rem;
+}
+
+.worksheet-grid .bond-circle {
+  width: 53px;
+  height: 53px;
+  font-size: 1.44rem;
+}
+
+.worksheet-grid .bond-branches {
+  width: 94px;
+  height: 22px;
+}
+
+.worksheet-grid .bond-row {
+  gap: 0.7rem;
 }
 
 .worksheet-grid .visual-question-title {
@@ -432,6 +502,21 @@
     --square-size: 12px;
     gap: 0.22rem;
     margin-top: 0.25rem;
+  }
+
+  .worksheet-grid .bond-circle {
+    width: 47px;
+    height: 47px;
+    font-size: 16.2pt;
+  }
+
+  .worksheet-grid .bond-branches {
+    width: 84px;
+    height: 20px;
+  }
+
+  .worksheet-grid .bond-row {
+    gap: 0.55rem;
   }
 
   .answer-line {

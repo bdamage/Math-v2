@@ -22,16 +22,19 @@ function renderWorksheetPrompt(prompt) {
 
 export function WorksheetPanel({ settings }) {
   const [questions, setQuestions] = useState(() =>
-    generateQuestionSet(settings, QUESTIONS_PER_PAGE),
+    generateQuestionSet({ ...settings, worksheetMode: true }, QUESTIONS_PER_PAGE),
   )
 
   useEffect(() => {
-    setQuestions(generateQuestionSet(settings, QUESTIONS_PER_PAGE))
+    setQuestions(generateQuestionSet({ ...settings, worksheetMode: true }, QUESTIONS_PER_PAGE))
   }, [settings])
 
   function regenerateWorksheet() {
-    setQuestions(generateQuestionSet(settings, QUESTIONS_PER_PAGE))
+    setQuestions(generateQuestionSet({ ...settings, worksheetMode: true }, QUESTIONS_PER_PAGE))
   }
+
+  const isNumberBondSheet = settings.exerciseType === 'numberBond'
+  const isObjectCountSheet = settings.exerciseType === 'objectCount'
 
   return (
     <section className="panel worksheet" aria-label="Utskriftsläge">
@@ -58,12 +61,36 @@ export function WorksheetPanel({ settings }) {
             <p>Datum: ____________________</p>
           </div>
           <p className="worksheet-meta">Antal frågor: {QUESTIONS_PER_PAGE}</p>
+          {isNumberBondSheet && (
+            <p className="worksheet-instruction">
+              Uppgift: Fyll i talet som saknas i den tomma cirkeln.
+            </p>
+          )}
+          {isObjectCountSheet && (
+            <p className="worksheet-instruction">
+              Uppgift: Räkna hur många rutor som är ifyllda och skriv svaret.
+            </p>
+          )}
         </header>
 
         <ul className="worksheet-grid" aria-label="Frågor">
           {questions.map((question) => (
             <li key={question.id}>
-              {question.visual ? (
+              {question.visual?.type === 'bondCircles' && isNumberBondSheet ? (
+                <>
+                  <SquareVisual visual={question.visual} />
+                  <p className="visual-answer-line" aria-hidden="true">
+                    Svar: <span className="answer-line" />
+                  </p>
+                </>
+              ) : question.visual?.type === 'squares' && isObjectCountSheet ? (
+                <>
+                  <SquareVisual visual={question.visual} />
+                  <p className="visual-answer-line" aria-hidden="true">
+                    Svar: <span className="answer-line" />
+                  </p>
+                </>
+              ) : question.visual ? (
                 <>
                   <p className="visual-question-title">{question.questionTitle ?? 'Fråga'}</p>
                   <span>{question.prompt}</span>

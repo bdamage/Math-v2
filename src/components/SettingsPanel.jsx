@@ -35,6 +35,7 @@ const EXERCISE_TYPE_OPTIONS = [
   { value: 'doubles', label: 'Dubbeltal (7 + 7)' },
   { value: 'halves', label: 'Hälften (12 ÷ 2)' },
   { value: 'objectCount', label: 'Räkna rutor (ifyllda/tomma)' },
+  { value: 'numberBond', label: 'Talcirklar (dela och addera)' },
   { value: 'tensTo100', label: 'Hela tiotal upp till 100' },
   { value: 'mixed', label: 'Blandade uppgiftstyper' },
 ]

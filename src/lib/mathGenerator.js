@@ -170,7 +170,7 @@ function buildTenFriends() {
   };
 }
 
-function buildObjectCount(rangeMax, cap) {
+function buildObjectCount(rangeMax, cap, worksheetMode = false) {
   const maxTotal = Math.max(5, Math.min(rangeMax, cap + 4));
   const total = randomInt(5, maxTotal);
   const filled = randomInt(1, total - 1);
@@ -181,7 +181,9 @@ function buildObjectCount(rangeMax, cap) {
     tensCandidates.push(value);
   }
 
-  const variant = sample(["filled", "empty", "total", "tens"]);
+  const variant = worksheetMode
+    ? "filled"
+    : sample(["filled", "empty", "total", "tens"]);
 
   if (variant === "filled") {
     return {
@@ -385,7 +387,7 @@ export function generateQuestion(settings, idSeed = 0) {
   } else if (kind === "halves") {
     generated = buildHalves(settings.rangeMax, cap);
   } else if (kind === "objectCount") {
-    generated = buildObjectCount(settings.rangeMax, cap);
+    generated = buildObjectCount(settings.rangeMax, cap, settings.worksheetMode);
   } else if (kind === "numberBond") {
     generated = buildNumberBond(settings.rangeMax, cap);
   } else if (kind === "tensTo100") {
