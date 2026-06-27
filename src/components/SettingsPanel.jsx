@@ -18,6 +18,7 @@ const OPERATION_OPTIONS = [
 const RANGE_OPTIONS = [
   { value: 10, label: '0-10' },
   { value: 20, label: '0-20' },
+  { value: 50, label: '0-50' },
 ]
 
 const DIFFICULTY_OPTIONS = [
@@ -30,6 +31,11 @@ const EXERCISE_TYPE_OPTIONS = [
   { value: 'standard', label: 'Vanliga uppgifter' },
   { value: 'open', label: 'Öppna utsagor (siffror)' },
   { value: 'missingFirst', label: 'Saknat första tal' },
+  { value: 'tenFriends', label: 'Tiotal-kompisar (summa 10)' },
+  { value: 'doubles', label: 'Dubbeltal (7 + 7)' },
+  { value: 'halves', label: 'Hälften (12 ÷ 2)' },
+  { value: 'objectCount', label: 'Räkna rutor (ifyllda/tomma)' },
+  { value: 'tensTo100', label: 'Hela tiotal upp till 100' },
   { value: 'mixed', label: 'Blandade uppgiftstyper' },
 ]
 

@@ -11,7 +11,16 @@ const DIFFICULTY_FACTORS = {
   hard: 1,
 };
 
-const EXERCISE_TYPES = ["standard", "open", "missingFirst"];
+const EXERCISE_TYPES = [
+  "standard",
+  "open",
+  "missingFirst",
+  "tenFriends",
+  "doubles",
+  "halves",
+  "objectCount",
+  "tensTo100",
+];
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -62,6 +71,178 @@ function buildDivision(rangeMax, cap) {
   const quotient = randomInt(0, Math.min(cap, Math.floor(rangeMax / divisor)));
   const dividend = divisor * quotient;
   return {a: dividend, b: divisor, op: "/", result: quotient};
+}
+
+function buildDoubles(rangeMax, cap) {
+  const n = randomInt(0, Math.min(cap, Math.floor(rangeMax / 2)));
+  return {
+    kind: "doubles",
+    prompt: `${n} + ${n} = _`,
+    answer: n + n,
+    answerLabel: String(n + n),
+  };
+}
+
+function buildHalves(rangeMax, cap) {
+  const top = Math.max(2, Math.min(rangeMax, cap * 2));
+  const evenCandidates = [];
+
+  for (let value = 2; value <= top; value += 1) {
+    if (value % 2 === 0) {
+      evenCandidates.push(value);
+    }
+  }
+
+  const dividend = evenCandidates.length > 0 ? sample(evenCandidates) : 2;
+  return {
+    kind: "halves",
+    prompt: `${dividend} ${OPERATOR_SYMBOLS["/"]} 2 = _`,
+    answer: dividend / 2,
+    answerLabel: String(dividend / 2),
+  };
+}
+
+function buildTensTo100(settings) {
+  const tens = Array.from({length: 11}, (_, index) => index * 10);
+  const preferredOps = settings.operationMode === "mixed"
+    ? ["+", "-"]
+    : ["+", "-"].includes(settings.operationMode)
+      ? [settings.operationMode]
+      : ["+"];
+
+  const op = sample(preferredOps);
+
+  if (op === "+") {
+    const a = sample(tens);
+    const bCandidates = tens.filter((value) => a + value <= 100);
+    const b = sample(bCandidates);
+    return {
+      kind: "tensTo100",
+      prompt: `${a} ${OPERATOR_SYMBOLS[op]} ${b} = _`,
+      answer: a + b,
+      answerLabel: String(a + b),
+    };
+  }
+
+  const a = sample(tens);
+  const bCandidates = tens.filter((value) =>
+    settings.allowNegative ? true : value <= a,
+  );
+  const b = sample(bCandidates);
+  return {
+    kind: "tensTo100",
+    prompt: `${a} ${OPERATOR_SYMBOLS[op]} ${b} = _`,
+    answer: a - b,
+    answerLabel: String(a - b),
+  };
+}
+
+function buildTenFriends() {
+  const first = randomInt(0, 10);
+  const second = 10 - first;
+  const variant = sample(["open", "missingFirst", "subtract"]);
+
+  if (variant === "open") {
+    return {
+      kind: "tenFriends",
+      prompt: `${first} + _ = 10`,
+      answer: second,
+      answerLabel: String(second),
+    };
+  }
+
+  if (variant === "missingFirst") {
+    return {
+      kind: "tenFriends",
+      prompt: `_ + ${second} = 10`,
+      answer: first,
+      answerLabel: String(first),
+    };
+  }
+
+  return {
+    kind: "tenFriends",
+    prompt: `10 - ${first} = _`,
+    answer: second,
+    answerLabel: String(second),
+  };
+}
+
+function buildObjectCount(rangeMax, cap) {
+  const maxTotal = Math.max(5, Math.min(rangeMax, cap + 4));
+  const total = randomInt(5, maxTotal);
+  const filled = randomInt(1, total - 1);
+  const tensCandidates = [];
+  const tensTop = Math.max(20, Math.min(100, Math.max(rangeMax, 20)));
+
+  for (let value = 10; value <= tensTop; value += 10) {
+    tensCandidates.push(value);
+  }
+
+  const variant = sample(["filled", "empty", "total", "tens"]);
+
+  if (variant === "filled") {
+    return {
+      kind: "objectCount",
+      prompt: "Hur många rutor är ifyllda?",
+      answer: filled,
+      answerLabel: String(filled),
+      visual: {
+        type: "squares",
+        total,
+        filled,
+      },
+      questionTitle: "Fråga",
+    };
+  }
+
+  if (variant === "empty") {
+    return {
+      kind: "objectCount",
+      prompt: "Hur många rutor är tomma?",
+      answer: total - filled,
+      answerLabel: String(total - filled),
+      visual: {
+        type: "squares",
+        total,
+        filled,
+      },
+      questionTitle: "Fråga",
+    };
+  }
+
+  if (variant === "tens") {
+    const tensTotal = sample(tensCandidates);
+    const filledTens = randomInt(1, Math.max(1, tensTotal / 10));
+    const filledSquares = filledTens * 10;
+
+    return {
+      kind: "objectCount",
+      prompt: "Hur många tiotal är ifyllda?",
+      answer: filledTens,
+      answerLabel: String(filledTens),
+      visual: {
+        type: "squares",
+        total: tensTotal,
+        filled: filledSquares,
+      },
+      questionTitle: "Fråga",
+    };
+  }
+
+  const hiddenFilled = randomInt(1, total - 1);
+  return {
+    kind: "objectCount",
+    prompt: `Hur många rutor är ifyllda om det finns ${total} totalt?`,
+    answer: hiddenFilled,
+    answerLabel: String(hiddenFilled),
+    visual: {
+      type: "squares",
+      total,
+      filled: hiddenFilled,
+    },
+    questionTitle: "Fråga",
+  };
 }
 
 function chooseOperation(mode) {
@@ -137,16 +318,37 @@ export function isCorrectAnswer(question, value) {
 }
 
 export function generateQuestion(settings, idSeed = 0) {
-  const base = buildBaseQuestion(settings);
   const kind = chooseExerciseType(settings.exerciseType);
-  const prompt = makePrompt(base, kind);
+  const cap = getDifficultyCap(settings.rangeMax, settings.difficulty);
+
+  let generated;
+
+  if (kind === "doubles") {
+    generated = buildDoubles(settings.rangeMax, cap);
+  } else if (kind === "tenFriends") {
+    generated = buildTenFriends();
+  } else if (kind === "halves") {
+    generated = buildHalves(settings.rangeMax, cap);
+  } else if (kind === "objectCount") {
+    generated = buildObjectCount(settings.rangeMax, cap);
+  } else if (kind === "tensTo100") {
+    generated = buildTensTo100(settings);
+  } else {
+    const base = buildBaseQuestion(settings);
+    generated = {
+      kind,
+      ...makePrompt(base, kind),
+    };
+  }
 
   return {
     id: `${Date.now()}-${idSeed}-${Math.random().toString(16).slice(2)}`,
-    kind,
-    prompt: prompt.text,
-    answer: prompt.answer,
-    answerLabel: prompt.answerLabel,
+    kind: generated.kind,
+    prompt: generated.prompt ?? generated.text,
+    answer: generated.answer,
+    answerLabel: generated.answerLabel,
+    visual: generated.visual,
+    questionTitle: generated.questionTitle,
   };
 }
 

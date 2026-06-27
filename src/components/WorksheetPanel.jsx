@@ -1,6 +1,7 @@
 import { Eye, EyeOff, Printer } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { generateQuestionSet } from '../lib/mathGenerator'
+import { SquareVisual } from './SquareVisual'
 
 const QUESTIONS_PER_PAGE = 30
 
@@ -62,7 +63,18 @@ export function WorksheetPanel({ settings }) {
         <ul className="worksheet-grid" aria-label="Frågor">
           {questions.map((question) => (
             <li key={question.id}>
-              <span>{renderWorksheetPrompt(question.prompt)}</span>
+              {question.visual ? (
+                <>
+                  <p className="visual-question-title">{question.questionTitle ?? 'Fråga'}</p>
+                  <span>{question.prompt}</span>
+                  <SquareVisual visual={question.visual} />
+                  <p className="visual-answer-line" aria-hidden="true">
+                    Svar: <span className="answer-line" />
+                  </p>
+                </>
+              ) : (
+                <span>{renderWorksheetPrompt(question.prompt)}</span>
+              )}
               {settings.showAnswers && (
                 <small className="answer-key">Facit: {question.answerLabel}</small>
               )}

@@ -153,6 +153,52 @@
   font-weight: 700;
 }
 
+.visual-question-block .question {
+  margin: 0.4rem 0 0.7rem;
+}
+
+.visual-question-title {
+  margin: 0;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #2f516f;
+}
+
+.visual-answer-line {
+  margin: 0.15rem 0 0.5rem;
+  font-weight: 700;
+  color: #1f2d3a;
+  min-height: 1.8rem;
+  display: inline-flex;
+  align-items: flex-end;
+}
+
+.square-visual {
+  --square-size: 20px;
+  display: grid;
+  grid-template-columns: repeat(var(--square-columns), var(--square-size));
+  gap: 0.35rem;
+  justify-content: center;
+  margin: 0.7rem 0 1rem;
+}
+
+.square-cell {
+  width: var(--square-size);
+  height: var(--square-size);
+  border-radius: 0.22rem;
+  border: 2px solid #31506a;
+}
+
+.square-cell.filled {
+  background: #2f7ea4;
+}
+
+.square-cell.empty {
+  background: #fff;
+}
+
 .answer-label {
   display: block;
   font-weight: 600;
@@ -268,9 +314,20 @@
   min-height: 2.2rem;
 }
 
+.worksheet-grid .square-visual {
+  --square-size: 14px;
+  justify-content: start;
+  margin: 0.35rem 0 0.2rem;
+}
+
+.worksheet-grid .visual-question-title {
+  margin-bottom: 0.2rem;
+}
+
 .answer-line {
   display: inline-block;
-  width: 4.6ch;
+  width: 8ch;
+  min-height: 1.15em;
   border-bottom: 2px solid #1f2d3a;
   transform: translateY(-0.08em);
   margin: 0 0.12em;
@@ -359,6 +416,22 @@
     min-height: 2.5rem;
     font-size: 15pt;
     line-height: 1.35;
+  }
+
+  .worksheet-grid .visual-question-title {
+    font-size: 11pt;
+  }
+
+  .worksheet-grid .visual-answer-line {
+    font-size: 12.5pt;
+    margin-top: 0.05rem;
+    min-height: 1.1cm;
+  }
+
+  .worksheet-grid .square-visual {
+    --square-size: 12px;
+    gap: 0.22rem;
+    margin-top: 0.25rem;
   }
 
   .answer-line {

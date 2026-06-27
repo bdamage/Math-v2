@@ -1,5 +1,6 @@
 import { CheckCircle2, CircleHelp, RefreshCw, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { SquareVisual } from './SquareVisual'
 import { generateQuestion, isCorrectAnswer } from '../lib/mathGenerator'
 
 function helperText(questionKind) {
@@ -52,9 +53,20 @@ export function PracticePanel({ settings }) {
         </p>
       </header>
 
-      <p className="question" aria-live="polite">
-        {question.prompt}
-      </p>
+      {question.visual ? (
+        <div className="visual-question-block" aria-live="polite">
+          <p className="visual-question-title">{question.questionTitle ?? 'Fråga'}</p>
+          <p className="question">{question.prompt}</p>
+          <SquareVisual visual={question.visual} />
+          <p className="visual-answer-line" aria-hidden="true">
+            Svar: <span className="answer-line" />
+          </p>
+        </div>
+      ) : (
+        <p className="question" aria-live="polite">
+          {question.prompt}
+        </p>
+      )}
 
       <label className="answer-label" htmlFor="answerInput">
         Ditt svar
