@@ -387,7 +387,11 @@ export function generateQuestion(settings, idSeed = 0) {
   } else if (kind === "halves") {
     generated = buildHalves(settings.rangeMax, cap);
   } else if (kind === "objectCount") {
-    generated = buildObjectCount(settings.rangeMax, cap, settings.worksheetMode);
+    generated = buildObjectCount(
+      settings.rangeMax,
+      cap,
+      settings.worksheetMode,
+    );
   } else if (kind === "numberBond") {
     generated = buildNumberBond(settings.rangeMax, cap);
   } else if (kind === "tensTo100") {
