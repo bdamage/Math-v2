@@ -28,9 +28,8 @@ const DIFFICULTY_OPTIONS = [
 
 const EXERCISE_TYPE_OPTIONS = [
   { value: 'standard', label: 'Vanliga uppgifter' },
-  { value: 'open', label: 'Öppna utsagor' },
+  { value: 'open', label: 'Öppna utsagor (siffror)' },
   { value: 'missingFirst', label: 'Saknat första tal' },
-  { value: 'missingOperator', label: 'Saknat räknesätt' },
   { value: 'mixed', label: 'Blandade uppgiftstyper' },
 ]
 

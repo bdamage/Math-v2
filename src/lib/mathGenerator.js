@@ -5,25 +5,13 @@ const OPERATOR_SYMBOLS = {
   "/": "÷",
 };
 
-const OPERATOR_INPUT_ALIASES = {
-  "+": "+",
-  "-": "-",
-  "*": "*",
-  x: "*",
-  X: "*",
-  "×": "*",
-  "/": "/",
-  ":": "/",
-  "÷": "/",
-};
-
 const DIFFICULTY_FACTORS = {
   easy: 0.45,
   medium: 0.7,
   hard: 1,
 };
 
-const EXERCISE_TYPES = ["standard", "open", "missingFirst", "missingOperator"];
+const EXERCISE_TYPES = ["standard", "open", "missingFirst"];
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -105,7 +93,7 @@ function buildBaseQuestion(settings) {
 
 function chooseExerciseType(mode) {
   if (mode !== "mixed") {
-    return mode;
+    return EXERCISE_TYPES.includes(mode) ? mode : "standard";
   }
 
   return sample(EXERCISE_TYPES);
@@ -134,12 +122,6 @@ function makePrompt(base, type) {
         answer: a,
         answerLabel: String(a),
       };
-    case "missingOperator":
-      return {
-        text: `${a} _ ${b} = ${result}`,
-        answer: op,
-        answerLabel: prettyOp,
-      };
     default:
       return {
         text: `${a} ${prettyOp} ${b} = _`,
@@ -149,16 +131,7 @@ function makePrompt(base, type) {
   }
 }
 
-export function normalizeOperatorInput(value) {
-  const trimmed = String(value).trim();
-  return OPERATOR_INPUT_ALIASES[trimmed] ?? trimmed;
-}
-
 export function isCorrectAnswer(question, value) {
-  if (question.kind === "missingOperator") {
-    return normalizeOperatorInput(value) === question.answer;
-  }
-
   const parsed = Number(String(value).trim());
   return Number.isFinite(parsed) && parsed === question.answer;
 }

@@ -59,7 +59,7 @@ export function WorksheetPanel({ settings }) {
           <p className="worksheet-meta">Antal frågor: {QUESTIONS_PER_PAGE}</p>
         </header>
 
-        <ol className="worksheet-grid">
+        <ul className="worksheet-grid" aria-label="Frågor">
           {questions.map((question) => (
             <li key={question.id}>
               <span>{renderWorksheetPrompt(question.prompt)}</span>
@@ -68,7 +68,7 @@ export function WorksheetPanel({ settings }) {
               )}
             </li>
           ))}
-        </ol>
+        </ul>
 
         <footer className="worksheet-footer">
           {settings.showAnswers ? (

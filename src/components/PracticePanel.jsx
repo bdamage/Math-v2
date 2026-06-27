@@ -3,10 +3,6 @@ import { useEffect, useState } from 'react'
 import { generateQuestion, isCorrectAnswer } from '../lib/mathGenerator'
 
 function helperText(questionKind) {
-  if (questionKind === 'missingOperator') {
-    return 'Skriv +, -, × eller ÷'
-  }
-
   return 'Skriv ett tal och tryck Kontrollera'
 }
 
